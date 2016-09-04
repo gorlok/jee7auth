@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JEE7 Auth example</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+pre {padding: 10px; background-color: #eee;}
+</style>
+</head>
+<body>
+<header><h1>JEE7 Auth example</h1></header>
+<div id="content">
+<p>Based on: <a href="http://stackoverflow.com/a/26778123/597200" target="_blank">Stack Overflow: Best practice for REST token-based authentication with JAX-RS and Jersey</a></p>
+<br/>
+<p>Using <a href="https://github.com/auth0/java-jwt" target="_blank">java-jwt</a> library</p>
+<br/>
+
+Good login: <pre>curl -v -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/authentication</pre>
+Verify JWT Token at <a href="https://jwt.io">https://jwt.io</a><br/>
+
+<br/>
+Bad login: <pre>curl -v -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"xxxx"}' http://localhost:8080/jee7auth/rest/authentication</pre>
+
+<br/>
+Test unsecured endpoint: <pre>curl -v -H "Content-Type: application/json" -X GET http://localhost:8080/jee7auth/rest/123</pre>
+
+<br/>
+Test SECURED endpoint: <pre>curl -v -H "Content-Type: application/json" -X DELETED http://localhost:8080/jee7auth/rest/123</pre>
+
+<br/>
+Test SECURED endpoint:
+<pre>
+TOKEN=`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/authentication` 
+curl -v -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -X DELETE http://localhost:8080/jee7auth/rest/123
+</pre>
+Replace $TOKEN with your jwt token value.<br/>
+</div>
+
+</body>
+</html>
