@@ -10,13 +10,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 @Path("/authentication")
 public class AuthenticationEndpoint {
 
 	@POST
-	@Produces("application/json")
+	@Produces("text/plain")
 	@Consumes("application/json")
 	public Response authenticateUser(Credentials credentials) {
 		String username = credentials.getUsername();
@@ -31,11 +32,12 @@ public class AuthenticationEndpoint {
 			
 			// Issue a token for the user
 			String token = issueToken(username, roles);
-
-			// Return the token on the response
-			//Authorization: Bearer <token-goes-here>
 			
-			return Response.ok(token).header(HttpHeaders.AUTHORIZATION, "Bearer " + token).build();
+			NewCookie authCookie = new NewCookie("AUTH", token, "/", null, 1, null, -1, null, true, true);
+			
+			// Return the token on the response
+			// Authorization: Bearer <token-goes-here>
+			return Response.ok(token).header(HttpHeaders.AUTHORIZATION, "Bearer " + token).cookie(authCookie).build();
 
 		} catch (Exception e) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
