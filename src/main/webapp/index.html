@@ -11,8 +11,10 @@ pre {padding: 10px; background-color: #eee;}
 <header><h1>JEE7 Auth example</h1></header>
 <div id="content">
 <p>Based on: <a href="http://stackoverflow.com/a/26778123/597200" target="_blank">Stack Overflow: Best practice for REST token-based authentication with JAX-RS and Jersey</a></p>
-<br/>
 <p>Using <a href="https://github.com/auth0/java-jwt" target="_blank">java-jwt</a> library</p>
+<p>With additional ideas taken from: <a href="http://www.aschua.de/blog/pairing-angularjs-and-javaee-for-authentication/">Pairing AngularJS and Java EE 7 for authentication</a></p>
+
+<h2>Go to <a href="test.html" target="_blank">TEST Page!</a></h2>
 <br/>
 
 Good login: <pre>curl -v -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/authentication</pre>

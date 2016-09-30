@@ -79,6 +79,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	}
 
 	private Map<String, Object> validateToken(String token) throws Exception {
+		// FIXME check is token was not revoked!
+		/* if token was revoked
+		 * 		throw new Exception('token was revoked');
+		 */
+		
 		// Check if it was issued by the server and if it's not expired
 		// Throw an Exception if the token is invalid
 		return new TokenManager().validateToken(token);
