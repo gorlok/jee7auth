@@ -26,8 +26,8 @@ function MyController(dataFactory, authFactory) {
 			.then(function(response){
 				console.log('login success! token: ' + response.data);
 				console.log('HEADERS: ', response.headers());
-				console.log('JWT:' + (response.headers()['authorization'].replace(/Bearer /g,'')));
-				authFactory.setJwt(response.headers()['authorization'].replace(/Bearer /g,''));
+				console.log('JWT Access Token:' + (response.headers()['authorization'].replace(/Bearer /g,'')));
+				authFactory.setAccessToken(response.headers()['authorization'].replace(/Bearer /g,''));
 				vm.user = '';
 				vm.passw = '';
 			},
@@ -64,17 +64,22 @@ function MyController(dataFactory, authFactory) {
 			});
 	};
 	
-	vm.isLoggedIn = function() {
-		return authFactory.isLoggedIn();
+	vm.isAuthenticated = function() {
+		var token = authFactory.isAuthenticated();
+		if (token) {
+			var decoded = jwt_decode(token);
+			console.log(decoded);			
+		}
+		
+		return token;
 	}
 }
 
 dataFactory.$inject = ['$http', 'URL', 'authFactory'];
 function dataFactory($http, URL, authFactory) {
 	var factory = {};
-	
 	factory.login = function(user, passw) {
-		authFactory.setJwt('');
+		authFactory.reset();
 		return $http.post(URL + '/authentication', {"username":user,"password":passw});
 	}
 	
@@ -83,7 +88,7 @@ function dataFactory($http, URL, authFactory) {
 	}
 	
 	factory.testDelete = function() {
-		//return $http.delete(URL + '/123', {'headers': {'Authorization' : 'Bearer ' + authFactory.getJwt()}});
+		//return $http.delete(URL + '/123', {'headers': {'Authorization' : 'Bearer ' + authFactory.getAccessToken()}});
 		return $http.delete(URL + '/123');
 	}
 	
@@ -94,8 +99,8 @@ authHttpRequestInterceptor.$inject = ['authFactory'];
 function authHttpRequestInterceptor(authFactory) {
     return {
         request: function ($request) {
-            if (authFactory.isLoggedIn()) {
-                $request.headers['Authorization'] = 'Bearer ' + authFactory.getJwt();
+            if (authFactory.isAuthenticated()) {
+                $request.headers['Authorization'] = 'Bearer ' + authFactory.getAccessToken();
             }
             return $request;
         }
@@ -103,21 +108,20 @@ function authHttpRequestInterceptor(authFactory) {
 }
 
 function authFactory() {
-	var factory = {};
+	var auth = {};
 	
-	factory.jwt = '';
-	factory.setJwt = function(_jwt) {
-		factory.jwt = _jwt;
+	auth.accessToken = '';
+	auth.setAccessToken = function(token) {
+		auth.accessToken = token;
 	}
-	factory.getJwt = function() {
-		return factory.jwt;
+	auth.getAccessToken = function() {
+		return auth.accessToken;
 	}
-	factory.isLoggedIn = function() {
-		return factory.jwt != '';
+	auth.isAuthenticated = function() {
+		return auth.accessToken;
 	}
-	factory.reset = function() {
-		factory.jwt = '';
+	auth.reset = function() {
+		auth.accessToken = '';
 	}
-	
-	return factory;
+	return auth;
 }

@@ -11,6 +11,7 @@ input[type=text] { width: 30em; }
 </style>
 <script src="js/lib/angular-1.5.8.min.js"></script>
 <script src="js/lib/angular-messages-1.5.8.min.js"></script>
+<script src="js/lib/jwt-decode.min.js"></script>
 <script src="js/app.js"></script>
 </head>
 <body ng-app="myapp" ng-controller="MyController as ctrl">
@@ -18,13 +19,13 @@ input[type=text] { width: 30em; }
 <h1>{{ctrl.hello}}</h1>
 
 <div class="box">
-	<form ng-submit="ctrl.login()" ng-hide="ctrl.isLoggedIn()">
+	<form ng-submit="ctrl.login()" ng-hide="ctrl.isAuthenticated()">
 		<label>User:</label><input ng-model="ctrl.user" autocomplete="off"><br/>
 		<label>Password:</label><input ng-model="ctrl.passw" autocomplete="off" type="password"><br/>
 		<input type="submit" value="Login">
 		<span ng-show="ctrl.error.message" class="error">{{ctrl.error.message}}</span>
 	</form>
-	<form ng-submit="ctrl.logout()" ng-show="ctrl.isLoggedIn()">
+	<form ng-submit="ctrl.logout()" ng-show="ctrl.isAuthenticated()">
 		<input type="submit" value="Logout">
 	</form>
 </div>
