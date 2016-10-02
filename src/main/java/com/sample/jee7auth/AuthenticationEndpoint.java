@@ -49,6 +49,7 @@ public class AuthenticationEndpoint {
 		// Throw an Exception if the credentials are invalid
 		
 		// FIXME
+		// Remember: store password's hashes, NEVER store passwords. Y can create salted hashes with BCrypt.
 		if (username.equals("admin") && password.equals("secret")) {
 			// ok: user authenticated
 		} else { 
