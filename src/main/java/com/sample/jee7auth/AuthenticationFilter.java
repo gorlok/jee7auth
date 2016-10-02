@@ -39,6 +39,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			// Validate the token
 			final Map<String, Object> claims = validateToken(token);
 			final String username = (String) claims.get("sub");
+//			final long expires = (Long) claims.get("exp");
+//			if (expires > System.currentTimeMillis() / 1000L) {
+//				throw new RuntimeException("jwt token expired");
+//			}
+			
 			@SuppressWarnings("unchecked")
 			final List<String> roles = (List<String>) claims.get("roles");
 

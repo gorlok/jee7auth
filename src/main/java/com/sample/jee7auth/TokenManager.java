@@ -41,7 +41,7 @@ public class TokenManager {
 			final Map<String, Object> claims = verifier.verify(jwtToken);
 			return claims;
 		} catch (Exception ex) {
-			throw new Exception("invalid tocken");
+			throw new Exception("invalid token: " + ex.getMessage());
 		}
 	}
 

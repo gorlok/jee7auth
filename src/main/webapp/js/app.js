@@ -66,11 +66,12 @@ function MyController(dataFactory, authFactory) {
 	
 	vm.isAuthenticated = function() {
 		var token = authFactory.isAuthenticated();
+		/*
 		if (token) {
 			var decoded = jwt_decode(token);
 			console.log(decoded);			
 		}
-		
+		*/
 		return token;
 	}
 }
