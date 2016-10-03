@@ -3,9 +3,12 @@ package com.sample.jee7auth;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Named;
+
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 
+@Named
 public class TokenManager {
 
 	final String ISSUER = "https://mydomain.com/";
@@ -36,6 +39,13 @@ public class TokenManager {
 	}
 
 	public Map<String, Object> validateToken(String jwtToken) throws Exception {
+		// FIXME check is token was not revoked!
+		/* if token was revoked
+		 * 		throw new Exception('token was revoked');
+		 */
+		
+		// Check if it was issued by the server and if it's not expired
+		// Throw an Exception if the token is invalid		
 		try {
 			final JWTVerifier verifier = new JWTVerifier(SECRET);
 			final Map<String, Object> claims = verifier.verify(jwtToken);

@@ -81,7 +81,7 @@ function dataFactory($http, URL, authFactory) {
 	var factory = {};
 	factory.login = function(user, passw) {
 		authFactory.reset();
-		return $http.post(URL + '/authentication', {"username":user,"password":passw});
+		return $http.post(URL + '/auth', {"username":user,"password":passw});
 	}
 	
 	factory.testGet = function() {

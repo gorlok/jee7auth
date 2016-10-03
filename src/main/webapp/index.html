@@ -17,11 +17,11 @@ pre {padding: 10px; background-color: #eee;}
 <h2>Go to <a href="test.html" target="_blank">TEST Page!</a></h2>
 <br/>
 
-Good login: <pre>curl -v -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/authentication</pre>
+Good login: <pre>curl -v -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/auth</pre>
 Verify JWT Token at <a href="https://jwt.io">https://jwt.io</a><br/>
 
 <br/>
-Bad login: <pre>curl -v -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"xxxx"}' http://localhost:8080/jee7auth/rest/authentication</pre>
+Bad login: <pre>curl -v -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"xxxx"}' http://localhost:8080/jee7auth/rest/auth</pre>
 
 <br/>
 Test unsecured endpoint: <pre>curl -v -H "Content-Type: application/json" -X GET http://localhost:8080/jee7auth/rest/123</pre>
@@ -32,10 +32,19 @@ Test SECURED endpoint: <pre>curl -v -H "Content-Type: application/json" -X DELET
 <br/>
 Test SECURED endpoint:
 <pre>
-TOKEN=`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/authentication` 
+TOKEN=`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/auth` 
 curl -v -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -X DELETE http://localhost:8080/jee7auth/rest/123
 </pre>
 Replace $TOKEN with your jwt token value.<br/>
+
+
+<br/>
+RENEW token:
+<pre>
+TOKEN=`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"secret"}' http://localhost:8080/jee7auth/rest/auth` 
+curl -v -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -X POST http://localhost:8080/jee7auth/rest/auth/renew
+</pre>
+
 </div>
 
 </body>

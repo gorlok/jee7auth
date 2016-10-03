@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -19,6 +20,9 @@ import javax.ws.rs.ext.Provider;
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
+	
+	@Inject
+	TokenManager tokenManager;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -37,7 +41,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		try {
 			// Validate the token
-			final Map<String, Object> claims = validateToken(token);
+			final Map<String, Object> claims = tokenManager.validateToken(token);
 			final String username = (String) claims.get("sub");
 //			final long expires = (Long) claims.get("exp");
 //			if (expires > System.currentTimeMillis() / 1000L) {
@@ -83,14 +87,4 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		}
 	}
 
-	private Map<String, Object> validateToken(String token) throws Exception {
-		// FIXME check is token was not revoked!
-		/* if token was revoked
-		 * 		throw new Exception('token was revoked');
-		 */
-		
-		// Check if it was issued by the server and if it's not expired
-		// Throw an Exception if the token is invalid
-		return new TokenManager().validateToken(token);
-	}
 }

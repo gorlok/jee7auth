@@ -5,17 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
-@Path("/authentication")
+@Path("/auth")
 public class AuthenticationEndpoint {
 
+	@Inject
+	TokenManager tokenManager;
+	
 	@POST
 	@Produces("text/plain")
 	@Consumes("application/json")
@@ -38,6 +44,43 @@ public class AuthenticationEndpoint {
 			// Return the token on the response
 			// Authorization: Bearer <token-goes-here>
 			return Response.ok(token).header(HttpHeaders.AUTHORIZATION, "Bearer " + token).cookie(authCookie).build();
+
+		} catch (Exception e) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+	}
+	
+	@POST
+	@Secured
+	@Path("/renew")
+	@Produces("text/plain")
+	public Response renewToken(@Context HttpHeaders headers) {
+		try {
+			// Get the HTTP Authorization header from the request
+			String authorizationHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+			// Check if the HTTP Authorization header is present and formatted
+			// correctly
+			if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+				throw new NotAuthorizedException("Authorization header must be provided");
+			}
+			// Extract the token from the HTTP Authorization header
+			String token = authorizationHeader.substring("Bearer".length()).trim();
+
+			// load roles FIXME
+			List<String> roles = Arrays.asList("admin", "role1", "role2");
+			final Map<String, Object> claims = tokenManager.validateToken(token);
+			
+			
+			final String username = (String) claims.get("sub");
+			
+			// Issue a token for the user
+			String newToken = issueToken(username, roles);
+			
+			NewCookie authCookie = new NewCookie("AUTH", newToken, "/", null, 1, null, -1, null, true, true);
+			
+			// Return the token on the response
+			// Authorization: Bearer <token-goes-here>
+			return Response.ok(token).header(HttpHeaders.AUTHORIZATION, "Bearer " + newToken).cookie(authCookie).build();
 
 		} catch (Exception e) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
